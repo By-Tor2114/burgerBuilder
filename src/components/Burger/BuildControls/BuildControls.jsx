@@ -14,7 +14,9 @@ const BuildControls = ({
   ingredientAdded,
   ingredientRemoved,
   disabled,
-  price
+  price,
+  canBuy,
+  order
 }) => {
   return (
     <div className={classes.BuildControls}>
@@ -32,6 +34,13 @@ const BuildControls = ({
           />
         );
       })}
+      <button
+        onClick={order}
+        disabled={!canBuy}
+        className={classes.OrderButton}
+      >
+        ORDER NOW!
+      </button>
     </div>
   );
 };

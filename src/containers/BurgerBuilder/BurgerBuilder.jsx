@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
+import Modal from '../../components/UI/Modal/Modal';
+import OrderSummary from '../../components/Burger/OrderSummary';
 
 const INGREDIENT_PRICES = {
   salad: 0.5,
@@ -17,7 +19,23 @@ class BurgerBuilder extends Component {
       cheese: 0,
       meat: 0
     },
-    totalPrice: 4
+    totalPrice: 4,
+    canBuy: false,
+    isOrdering: false
+  };
+
+  updateCanBuy = () => {
+    const ingredients = { ...this.state.ingredients };
+
+    const sum = Object.keys(ingredients)
+      .map(igKey => {
+        return ingredients[igKey];
+      })
+      .reduce((a, b) => {
+        return a + b;
+      });
+
+    this.setState({ canBuy: sum > 0 });
   };
 
   addIngredient = type => {
@@ -36,6 +54,10 @@ class BurgerBuilder extends Component {
         }
       };
     });
+
+    setTimeout(() => {
+      this.updateCanBuy();
+    }, 100);
   };
 
   removeIngredient = type => {
@@ -50,10 +72,18 @@ class BurgerBuilder extends Component {
         }
       };
     });
+
+    setTimeout(() => {
+      this.updateCanBuy();
+    }, 100);
+  };
+
+  orderHandler = () => {
+    this.setState({ isOrdering: true });
   };
 
   render() {
-    const { ingredients, totalPrice } = this.state;
+    const { ingredients, totalPrice, canBuy, isOrdering } = this.state;
 
     const disabledInfo = {
       ...ingredients
@@ -65,12 +95,17 @@ class BurgerBuilder extends Component {
 
     return (
       <Fragment>
+        <Modal show={isOrdering}>
+          <OrderSummary ingredients={ingredients} />
+        </Modal>
         <Burger ingredients={ingredients} />
         <BuildControls
           ingredientRemoved={this.removeIngredient}
           ingredientAdded={this.addIngredient}
           disabled={disabledInfo}
           price={totalPrice}
+          canBuy={canBuy}
+          order={this.orderHandler}
         />
       </Fragment>
     );
