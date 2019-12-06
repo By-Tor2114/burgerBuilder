@@ -10,13 +10,23 @@ const controls = [
   { label: 'Meat', type: 'meat' }
 ];
 
-const BuildControls = ({ ingredientAdded }) => {
+const BuildControls = ({
+  ingredientAdded,
+  ingredientRemoved,
+  disabled,
+  price
+}) => {
   return (
     <div className={classes.BuildControls}>
+      Current Price: <strong> {`£${price.toFixed(2)}`}</strong>
       {controls.map(control => {
         return (
           <BuildControl
             added={() => ingredientAdded(control.type)}
+            removed={() => {
+              ingredientRemoved(control.type);
+            }}
+            disabled={disabled[control.type]}
             key={control.label}
             label={control.label}
           />
