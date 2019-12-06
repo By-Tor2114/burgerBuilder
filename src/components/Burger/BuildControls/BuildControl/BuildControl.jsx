@@ -1,6 +1,5 @@
 import React from 'react';
 import classes from './BuildControl.module.css';
-import PropTypes from 'prop-types';
 
 const BuildControl = ({ label, added, removed, disabled }) => {
   return (

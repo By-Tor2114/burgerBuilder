@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import classes from './BuildControls.module.css';
 import BuildControl from './BuildControl/BuildControl';
 
@@ -20,7 +19,7 @@ const BuildControls = ({
 }) => {
   return (
     <div className={classes.BuildControls}>
-      Current Price: <strong> {`£${price.toFixed(2)}`}</strong>
+      Current Price: <strong> £{price.toFixed(2)}</strong>
       {controls.map(control => {
         return (
           <BuildControl
