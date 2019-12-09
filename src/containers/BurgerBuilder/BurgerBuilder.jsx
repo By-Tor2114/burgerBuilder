@@ -4,6 +4,7 @@ import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Modal from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary';
 import axios from '../../axios-orders';
+import Spinner from '../../components/UI/Spinner/Spinner';
 
 const INGREDIENT_PRICES = {
   salad: 0.5,
@@ -22,7 +23,8 @@ class BurgerBuilder extends Component {
     },
     totalPrice: 4,
     canBuy: false,
-    isOrdering: false
+    isOrdering: false,
+    isLoading: false
   };
 
   updateCanBuy = () => {
@@ -87,7 +89,8 @@ class BurgerBuilder extends Component {
     this.setState({ isOrdering: false });
   };
 
-  purchaseContinue = async () => {
+  purchaseContinue = () => {
+    this.setState({ isLoading: true });
     const order = {
       ingredients: this.state.ingredients,
       pirce: this.state.totalPrice,
@@ -103,13 +106,24 @@ class BurgerBuilder extends Component {
       deliveryMethod: 'fastest'
     };
 
-    const res = await axios.post('/orders.json', order);
-
-    console.log(res);
+    axios
+      .post('/orders.json', order)
+      .then(res => {
+        this.setState({ isLoading: false, isOrdering: false });
+      })
+      .catch(err => {
+        this.setState({ isLoading: false, isOrdering: false });
+      });
   };
 
   render() {
-    const { ingredients, totalPrice, canBuy, isOrdering } = this.state;
+    const {
+      ingredients,
+      totalPrice,
+      canBuy,
+      isOrdering,
+      isLoading
+    } = this.state;
 
     const disabledInfo = {
       ...ingredients
@@ -119,15 +133,23 @@ class BurgerBuilder extends Component {
       disabledInfo[key] = disabledInfo[key] === 0;
     }
 
+    let orderSummary = (
+      <OrderSummary
+        purchaseCancel={this.purchaseCancel}
+        purchaseContinue={this.purchaseContinue}
+        ingredients={ingredients}
+        price={totalPrice}
+      />
+    );
+
+    if (isLoading) {
+      orderSummary = <Spinner />;
+    }
+
     return (
       <Fragment>
         <Modal modalClosed={this.purchaseCancel} show={isOrdering}>
-          <OrderSummary
-            purchaseCancel={this.purchaseCancel}
-            purchaseContinue={this.purchaseContinue}
-            ingredients={ingredients}
-            price={totalPrice}
-          />
+          {orderSummary}
         </Modal>
         <Burger ingredients={ingredients} />
         <BuildControls
