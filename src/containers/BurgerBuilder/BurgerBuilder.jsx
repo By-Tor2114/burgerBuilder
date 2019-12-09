@@ -16,16 +16,21 @@ const INGREDIENT_PRICES = {
 
 class BurgerBuilder extends Component {
   state = {
-    ingredients: {
-      salad: 0,
-      bacon: 0,
-      cheese: 0,
-      meat: 0
-    },
+    ingredients: null,
     totalPrice: 4,
     canBuy: false,
     isOrdering: false,
-    isLoading: false
+    isLoading: false,
+    error: null
+  };
+
+  componentDidMount = async () => {
+    try {
+      const { data } = await axios.get('/ingredients.json');
+      this.setState({ ingredients: data });
+    } catch (error) {
+      this.setState({ error: true });
+    }
   };
 
   updateCanBuy = () => {
@@ -123,7 +128,8 @@ class BurgerBuilder extends Component {
       totalPrice,
       canBuy,
       isOrdering,
-      isLoading
+      isLoading,
+      error
     } = this.state;
 
     const disabledInfo = {
@@ -134,14 +140,32 @@ class BurgerBuilder extends Component {
       disabledInfo[key] = disabledInfo[key] === 0;
     }
 
-    let orderSummary = (
-      <OrderSummary
-        purchaseCancel={this.purchaseCancel}
-        purchaseContinue={this.purchaseContinue}
-        ingredients={ingredients}
-        price={totalPrice}
-      />
-    );
+    let orderSummary = null;
+    let burger = error ? <p>Ingredients can't be loaded</p> : <Spinner />;
+
+    if (ingredients) {
+      burger = (
+        <Fragment>
+          <Burger ingredients={ingredients} />
+          <BuildControls
+            ingredientRemoved={this.removeIngredient}
+            ingredientAdded={this.addIngredient}
+            disabled={disabledInfo}
+            price={totalPrice}
+            canBuy={canBuy}
+            order={this.orderHandler}
+          />
+        </Fragment>
+      );
+      orderSummary = (
+        <OrderSummary
+          purchaseCancel={this.purchaseCancel}
+          purchaseContinue={this.purchaseContinue}
+          ingredients={ingredients}
+          price={totalPrice}
+        />
+      );
+    }
 
     if (isLoading) {
       orderSummary = <Spinner />;
@@ -152,15 +176,7 @@ class BurgerBuilder extends Component {
         <Modal modalClosed={this.purchaseCancel} show={isOrdering}>
           {orderSummary}
         </Modal>
-        <Burger ingredients={ingredients} />
-        <BuildControls
-          ingredientRemoved={this.removeIngredient}
-          ingredientAdded={this.addIngredient}
-          disabled={disabledInfo}
-          price={totalPrice}
-          canBuy={canBuy}
-          order={this.orderHandler}
-        />
+        {burger}
       </Fragment>
     );
   }
