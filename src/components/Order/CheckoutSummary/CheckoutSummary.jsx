@@ -14,7 +14,7 @@ const CheckoutSummary = ({ ingredients }) => {
         CANCEL
       </Button>
       <Button clicked buttonType="Success">
-        Continue
+        CONTINUE
       </Button>
     </div>
   );
