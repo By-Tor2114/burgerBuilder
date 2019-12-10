@@ -7,7 +7,7 @@ const CheckoutSummary = ({ ingredients }) => {
   return (
     <div className={classes.CheckoutSummary}>
       <h1>We hope it tastes great!</h1>
-      <div style={{ width: '100%', margin: '0 -100px' }}>
+      <div style={{ width: '100%', margin: 'auto' }}>
         <Burger ingredients={ingredients} />
       </div>
       <Button clicked buttonType="Danger">
