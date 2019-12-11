@@ -153,11 +153,13 @@ class ContactData extends Component {
         config: this.state.orderForm[key]
       });
     }
+    console.log(formElementsArray);
 
     let form = (
       <form onSubmit={this.orderHandler}>
         {formElementsArray.map(formElement => (
           <Input
+            valueType={formElement.config.elementConfig.placeholder}
             shouldValidate={formElement.config.validation}
             invalid={!formElement.config.valid}
             touched={formElement.config.touched}
