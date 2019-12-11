@@ -71,10 +71,12 @@ class ContactData extends Component {
             { value: 'cheapest', displayValue: 'Cheapest' }
           ]
         },
-        value: ''
+        value: '',
+        valid: true
       }
     },
-    isLoading: false
+    isLoading: false,
+    formIsValid: false
   };
 
   orderHandler = event => {
@@ -141,7 +143,12 @@ class ContactData extends Component {
 
     updatedOrderForm[inputId.id] = updatedFormElement;
 
-    this.setState({ orderForm: updatedOrderForm });
+    let formIsValid = true;
+    for (let inputIdentifier in updatedOrderForm) {
+      formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
+    }
+
+    this.setState({ orderForm: updatedOrderForm, formIsValid });
   };
 
   render() {
@@ -153,7 +160,6 @@ class ContactData extends Component {
         config: this.state.orderForm[key]
       });
     }
-    console.log(formElementsArray);
 
     let form = (
       <form onSubmit={this.orderHandler}>
@@ -170,7 +176,11 @@ class ContactData extends Component {
             value={formElement.config.value}
           />
         ))}
-        <Button clicked={this.orderHandler} buttonType="Success">
+        <Button
+          disabled={!this.state.formIsValid}
+          clicked={this.orderHandler}
+          buttonType="Success"
+        >
           ORDER
         </Button>
       </form>
