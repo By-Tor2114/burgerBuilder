@@ -132,7 +132,6 @@ class ContactData extends Component {
       updatedFormElement.value,
       updatedFormElement.validation
     );
-    console.log(updatedFormElement);
 
     updatedOrderForm[inputId.id] = updatedFormElement;
 
@@ -153,6 +152,8 @@ class ContactData extends Component {
       <form onSubmit={this.orderHandler}>
         {formElementsArray.map(formElement => (
           <Input
+            shouldValidate={formElement.config.validation}
+            invalid={!formElement.config.valid}
             changed={event => this.inputChangeHandler(event, formElement)}
             key={formElement.id}
             elementType={formElement.config.elementType}
