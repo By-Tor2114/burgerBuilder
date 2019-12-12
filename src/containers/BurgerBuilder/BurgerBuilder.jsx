@@ -18,12 +18,12 @@ class BurgerBuilder extends Component {
   };
 
   componentDidMount = async () => {
-    // try {
-    //   const { data } = await axios.get('/ingredients.json');
-    //   this.setState({ ingredients: data });
-    // } catch (error) {
-    //   this.setState({ error: true });
-    // }
+    try {
+      const { data } = await axios.get('/ingredients.json');
+      this.setState({ ingredients: data });
+    } catch (error) {
+      this.setState({ error: true });
+    }
   };
 
   updateCanBuy = ingredients => {
@@ -52,7 +52,6 @@ class BurgerBuilder extends Component {
 
   render() {
     const { isOrdering, isLoading, error } = this.state;
-
     const { price, ings, onIngredientAdded, onIngredientRemoved } = this.props;
 
     const disabledInfo = {
