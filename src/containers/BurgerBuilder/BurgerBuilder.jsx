@@ -10,16 +10,8 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import * as actionTypes from '../../store/actions';
 
-const INGREDIENT_PRICES = {
-  salad: 0.5,
-  cheese: 0.4,
-  meat: 1.4,
-  bacon: 0.7
-};
-
 class BurgerBuilder extends Component {
   state = {
-    totalPrice: 4,
     canBuy: false,
     isOrdering: false,
     isLoading: false,
@@ -47,46 +39,6 @@ class BurgerBuilder extends Component {
       });
 
     this.setState({ canBuy: sum > 0 });
-  };
-
-  addIngredient = type => {
-    const priceAddition = INGREDIENT_PRICES[type];
-
-    if (this.state.ingredients[type] === 5) {
-      return alert(`Whoa! I think there's enough ${type} in there now!`);
-    }
-
-    this.setState(currentState => {
-      return {
-        totalPrice: currentState.totalPrice + priceAddition,
-        ingredients: {
-          ...currentState.ingredients,
-          [type]: currentState.ingredients[type] + 1
-        }
-      };
-    });
-
-    setTimeout(() => {
-      this.updateCanBuy();
-    }, 100);
-  };
-
-  removeIngredient = type => {
-    const priceAddition = INGREDIENT_PRICES[type];
-
-    this.setState(currentState => {
-      return {
-        totalPrice: currentState.totalPrice - priceAddition,
-        ingredients: {
-          ...currentState.ingredients,
-          [type]: currentState.ingredients[type] - 1
-        }
-      };
-    });
-
-    setTimeout(() => {
-      this.updateCanBuy();
-    }, 100);
   };
 
   orderHandler = () => {
@@ -119,9 +71,9 @@ class BurgerBuilder extends Component {
   };
 
   render() {
-    const { totalPrice, canBuy, isOrdering, isLoading, error } = this.state;
+    const { canBuy, isOrdering, isLoading, error } = this.state;
 
-    const { ings, onIngredientAdded, onIngredientRemoved } = this.props;
+    const { price, ings, onIngredientAdded, onIngredientRemoved } = this.props;
 
     const disabledInfo = {
       ...ings
@@ -144,7 +96,7 @@ class BurgerBuilder extends Component {
             disabled={disabledInfo}
             canBuy={canBuy}
             order={this.orderHandler}
-            price={totalPrice}
+            price={price}
           />
         </Fragment>
       );
@@ -153,7 +105,7 @@ class BurgerBuilder extends Component {
           purchaseCancel={this.purchaseCancel}
           purchaseContinue={this.purchaseContinue}
           ingredients={ings}
-          price={totalPrice}
+          price={price}
         />
       );
     }
@@ -175,7 +127,8 @@ class BurgerBuilder extends Component {
 
 const mapStateToProps = state => {
   return {
-    ings: state.ingredients
+    ings: state.ingredients,
+    price: state.totalPrice
   };
 };
 
