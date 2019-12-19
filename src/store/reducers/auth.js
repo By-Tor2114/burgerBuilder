@@ -16,9 +16,10 @@ const reducer = (state = initialState, action) => {
         ...state,
         token: action.idToken,
         userId: action.userId,
-        isLoading: false
+        isLoading: false,
+        error: null
       };
-    case actionTypes.FETCH_ORDERS_FAILED:
+    case actionTypes.AUTH_FAILED:
       return {
         ...state,
         error: action.error,

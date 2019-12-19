@@ -35,13 +35,13 @@ export const auth = (email, password, isSignUp) => {
 
     axios
       .post(url, { email, password, returnSecureToken: true })
-      .then(({ data }) => {
-        console.log(data);
-        dispatch(authSuccess(data.idToken, data.localId));
+      .then(response => {
+        console.log(response.data);
+        dispatch(authSuccess(response.data.idToken, response.data.localId));
       })
       .catch(err => {
         console.log(err);
-        dispatch(authFailed(err));
+        dispatch(authFailed(err.response.data.error));
       });
   };
 };

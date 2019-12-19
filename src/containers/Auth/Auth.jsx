@@ -5,6 +5,7 @@ import Button from '../../components/UI/Button/Button';
 import classes from './Auth.module.css';
 import * as actions from '../../store/actions/index';
 import { connect } from 'react-redux';
+import Spinner from '../../components/UI/Spinner/Spinner';
 
 class Auth extends Component {
   state = {
@@ -101,7 +102,7 @@ class Auth extends Component {
       });
     }
 
-    const form = formElementsArray.map(formElement => (
+    let form = formElementsArray.map(formElement => (
       <Input
         key={formElement.id}
         elementType={formElement.config.elementType}
@@ -115,8 +116,36 @@ class Auth extends Component {
       />
     ));
 
+    if (this.props.isLoading) {
+      form = <Spinner />;
+    }
+
+    let errorMessage = null;
+
+    if (this.props.error) {
+      let errorOutput = '';
+
+      switch (this.props.error.message) {
+        case 'EMAIL_EXISTS':
+          errorOutput = 'A user already exists with this e-mail address';
+          break;
+        case 'INVALID_EMAIL':
+          errorOutput = 'Please supply a valid e-mail address';
+          break;
+        case 'EMAIL_NOT_FOUND':
+          errorOutput = 'No such e-mail address registered';
+          break;
+        default:
+          errorOutput = this.props.error.message;
+      }
+
+      errorMessage = <p>{errorOutput}</p>;
+    }
+
     return (
       <div className={classes.Auth}>
+        {errorMessage}
+
         <form onSubmit={this.submitHanlder}>
           {form}
           <Button buttonType="Success">Submit </Button>
@@ -128,6 +157,14 @@ class Auth extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    isLoading: state.auth.isLoading,
+    error: state.auth.error
+  };
+};
+
 const mapDispatchToProps = dispatch => {
   return {
     onAuth: (email, password, isSignUp) =>
@@ -135,4 +172,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(Auth);
+export default connect(mapStateToProps, mapDispatchToProps)(Auth);
