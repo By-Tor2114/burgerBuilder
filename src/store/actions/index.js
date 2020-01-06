@@ -6,4 +6,11 @@ export {
 
 export { purchaseBurger, purchaseInit, fetchOrders } from './order';
 
-export { auth, logout, authStart, authFailed, authSuccess } from './auth';
+export {
+  auth,
+  logout,
+  setAuthRedirectPath,
+  authStart,
+  authFailed,
+  authSuccess
+} from './auth';
