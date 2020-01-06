@@ -7,6 +7,8 @@ const initialState = {
   isLoading: false
 };
 
+console.log(initialState);
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.AUTH_START:
